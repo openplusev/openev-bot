@@ -1,4 +1,4 @@
-# opencapper-bot
+# openev-bot
 
 Discord bot for OpenCapper, the verified sports picks platform. Analysts lock picks with
 `/pick`, the OpenCapper API captures the odds and grades them, and `/recap` posts the

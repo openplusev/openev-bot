@@ -1,6 +1,6 @@
-# CLAUDE.md: opencapper-bot
+# CLAUDE.md: openev-bot
 
-Product decisions live in `../claude.md`. The web app and API are the separate `opencapper` repo.
+Product decisions live in `../claude.md`. The web app and API are the separate `openev` repo (github.com/openplusev/openev).
 
 ## Rules
 

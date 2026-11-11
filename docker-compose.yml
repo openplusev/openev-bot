@@ -1,13 +1,13 @@
 services:
-  opencapper-bot:
-    container_name: opencapper-bot
+  openev-bot:
+    container_name: openev-bot
     build:
       context: .
       dockerfile: Dockerfile
     restart: always
     env_file: .env
     volumes:
-      - opencapper-bot-data:/app/data
+      - bot-data:/app/data
     networks:
       - proxy
 
@@ -16,4 +16,5 @@ networks:
     external: true
 
 volumes:
-  opencapper-bot-data:
+  bot-data:
+    name: opencapper-bot_opencapper-bot-data
