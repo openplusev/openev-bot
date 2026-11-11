@@ -1,4 +1,5 @@
 import { alertSettingsEmbed } from "@/core/embeds/alert-settings.embed";
+import { personalAlertsReply } from "@/core/embeds/personal-alerts.embed";
 import { previewAlert } from "@/core/services/alerts.feed";
 import {
   guildSettings,
@@ -23,6 +24,7 @@ import {
   ApplicationCommandOptionType,
   type AutocompleteInteraction,
   CommandInteraction,
+  type Guild,
   InteractionContextType,
   MessageFlags,
   PermissionFlagsBits,
@@ -78,12 +80,33 @@ async function autocompleteBooks(interaction: AutocompleteInteraction) {
     .catch(() => {});
 }
 
+// Checked here, not with defaultMemberPermissions, which would hide `/alerts me` from members too.
+async function managedGuild(
+  interaction: CommandInteraction,
+): Promise<Guild | null> {
+  const guild = interaction.guild;
+  if (!guild) {
+    await replyEphemeral(
+      interaction,
+      "Server alerts are set up inside a server. `/alerts me` shows your personal alerts.",
+    );
+    return null;
+  }
+  if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)) {
+    await replyEphemeral(
+      interaction,
+      "You need Manage Server to change this server's alerts. `/alerts me` shows your personal alerts.",
+    );
+    return null;
+  }
+  return guild;
+}
+
 @Discord()
 @SlashGroup({
   name: "alerts",
-  description: "Value bet and arb alerts in this server",
-  contexts: [InteractionContextType.Guild],
-  defaultMemberPermissions: PermissionFlagsBits.ManageGuild,
+  description: "Value bet and arb alerts, in this server or by DM",
+  contexts: [InteractionContextType.Guild, InteractionContextType.BotDM],
 })
 @SlashGroup("alerts")
 export class AlertsCommand {
@@ -99,7 +122,7 @@ export class AlertsCommand {
     channel: { id: string },
     interaction: CommandInteraction,
   ) {
-    const guild = interaction.guild;
+    const guild = await managedGuild(interaction);
     if (!guild) return;
     if (!feedChannel(guild, channel.id)) {
       await replyEphemeral(
@@ -117,7 +140,7 @@ export class AlertsCommand {
 
   @Slash({ name: "stop", description: "Stop posting alerts and arbs" })
   async stop(interaction: CommandInteraction) {
-    const guildId = interaction.guildId;
+    const guildId = (await managedGuild(interaction))?.id;
     if (!guildId) return;
     await updateGuildSettings(guildId, { channelId: null });
     await replyEphemeral(
@@ -139,7 +162,7 @@ export class AlertsCommand {
     value: number,
     interaction: CommandInteraction,
   ) {
-    const guildId = interaction.guildId;
+    const guildId = (await managedGuild(interaction))?.id;
     if (!guildId) return;
     const s = await updateGuildSettings(guildId, { minEv: value / 100 });
     await replyEphemeral(
@@ -161,7 +184,7 @@ export class AlertsCommand {
     input: string,
     interaction: CommandInteraction,
   ) {
-    const guildId = interaction.guildId;
+    const guildId = (await managedGuild(interaction))?.id;
     if (!guildId) return;
     const wanted = splitBooks(input);
     if (wanted.length === 0 || wanted.includes("all")) {
@@ -212,7 +235,7 @@ export class AlertsCommand {
     level: string,
     interaction: CommandInteraction,
   ) {
-    const guildId = interaction.guildId;
+    const guildId = (await managedGuild(interaction))?.id;
     if (!guildId || !isAlertConfidence(level)) return;
     await updateGuildSettings(guildId, { minConfidence: level });
     const name = ALERT_CONFIDENCES.find((c) => c.value === level)?.name;
@@ -247,7 +270,7 @@ export class AlertsCommand {
     minProfit: number | undefined,
     interaction: CommandInteraction,
   ) {
-    const guild = interaction.guild;
+    const guild = await managedGuild(interaction);
     if (!guild) return;
     if (channel && !feedChannel(guild, channel.id)) {
       await replyEphemeral(
@@ -276,7 +299,7 @@ export class AlertsCommand {
 
   @Slash({ name: "status", description: "Show this server's alert settings" })
   async status(interaction: CommandInteraction) {
-    const guildId = interaction.guildId;
+    const guildId = (await managedGuild(interaction))?.id;
     if (!guildId) return;
     await interaction
       .reply({
@@ -288,11 +311,25 @@ export class AlertsCommand {
   }
 
   @Slash({
+    name: "me",
+    description: "Your personal DM alerts, only you see it",
+  })
+  async me(interaction: CommandInteraction) {
+    await interaction
+      .reply({
+        ...personalAlertsReply(interaction.user.id),
+        flags: [MessageFlags.Ephemeral],
+        allowedMentions: { parse: [] },
+      })
+      .catch(() => {});
+  }
+
+  @Slash({
     name: "test",
     description: "Preview an alert with this server's filters, only you see it",
   })
   async test(interaction: CommandInteraction) {
-    const guildId = interaction.guildId;
+    const guildId = (await managedGuild(interaction))?.id;
     if (!guildId) return;
     if (
       !(await safeDeferReply(interaction, { flags: [MessageFlags.Ephemeral] }))

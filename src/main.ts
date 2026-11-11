@@ -1,8 +1,15 @@
 import { ErrorBoundary } from "@/bot/guards/error-boundary.guard";
-import { runAlertsDryRun, startAlertsFeed } from "@/core/services/alerts.feed";
-import { startResultsFeed } from "@/core/services/results.feed";
+import { guildTargets, runAlertsFeed } from "@/core/services/alerts.feed";
+import { startDmAlerts } from "@/core/services/dm-alerts";
+import { runDryRun } from "@/core/services/dry-run";
+import { loadGuildSettings } from "@/core/services/guild-settings";
 import { logger } from "@/lib/logger";
-import { WEBSITE_URL } from "@/shared/config/branding";
+import {
+  INTERNAL_TOKEN,
+  fetchSubscribers,
+  recordDelivery,
+} from "@/lib/openev/internal";
+import { OPENEV_WEBSITE_URL } from "@/shared/config/openev";
 import { ActivityType, GatewayIntentBits } from "discord.js";
 import { Client } from "discordx";
 import "./bot";
@@ -10,10 +17,6 @@ import "./bot";
 const token = process.env.DISCORD_BOT_TOKEN?.trim();
 const devGuildId = process.env.DEV_GUILD_ID?.trim();
 const dryRun = process.env.DRY_RUN?.trim() === "1";
-
-if (!dryRun && !process.env.BOT_API_TOKEN?.trim()) {
-  logger.warn("BOT_API_TOKEN is not set, API calls will be rejected");
-}
 
 export const bot = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -29,8 +32,27 @@ bot.once("clientReady", async () => {
     guilds: bot.guilds.cache.size,
     commandScope: devGuildId ? `guild ${devGuildId}` : "global",
   });
-  await startResultsFeed(bot);
-  await startAlertsFeed(bot);
+  await loadGuildSettings();
+  if (INTERNAL_TOKEN) {
+    await startDmAlerts({
+      fetchSubscribers,
+      recordDelivery,
+      send: async (discordId, message) => {
+        await bot.users.send(discordId, {
+          embeds: message.embeds,
+          components: message.components,
+          allowedMentions: { parse: [] },
+        });
+      },
+      onDecision: (d) =>
+        d.decision === "skip" || d.decision === "queued"
+          ? logger.debug("DM decision", { ...d })
+          : logger.info("DM decision", { ...d }),
+    });
+  } else {
+    logger.warn("INTERNAL_TOKEN is not set, personal DM alerts are off");
+  }
+  await runAlertsFeed({ persist: true, targets: () => guildTargets(bot) });
 });
 
 bot.on("interactionCreate", (interaction) => {
@@ -51,7 +73,7 @@ bot.on("shardError", (err) =>
 
 async function main() {
   if (dryRun) {
-    await runAlertsDryRun(Number(process.env.DRY_RUN_SAMPLES) || 3);
+    await runDryRun(Number(process.env.DRY_RUN_SAMPLES) || 3);
     return;
   }
   if (!token) {
@@ -62,7 +84,7 @@ async function main() {
   bot.user?.setPresence({
     activities: [
       {
-        name: process.env.BOT_ACTIVITY?.trim() || WEBSITE_URL,
+        name: process.env.BOT_ACTIVITY?.trim() || OPENEV_WEBSITE_URL,
         type: ActivityType.Watching,
       },
     ],

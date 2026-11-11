@@ -1,4 +1,3 @@
-import { ApiError } from "@/lib/api";
 import {
   type CommandInteraction,
   type InteractionDeferReplyOptions,
@@ -50,35 +49,6 @@ export async function safeEditReply(
   }
 }
 
-const FAILURE_TTL_MS = 60_000;
-
-// A public deferred reply cannot turn ephemeral. Deleting it and following up leaves a
-// "Message could not be loaded" stub, so the error goes into the reply and removes itself.
-export async function replyFailure(
-  interaction: CommandInteraction,
-  error: unknown,
-): Promise<void> {
-  if (!(error instanceof ApiError)) throw error;
-  if (!interaction.deferred && !interaction.replied) {
-    await interaction
-      .reply({ content: error.message, flags: [MessageFlags.Ephemeral] })
-      .catch(() => {});
-    return;
-  }
-  const removeAt = Math.floor((Date.now() + FAILURE_TTL_MS) / 1000);
-  const edited = await safeEditReply(interaction, {
-    content: `${error.message}\n-# This message disappears <t:${removeAt}:R>.`,
-    embeds: [],
-    components: [],
-    allowedMentions: { parse: [] },
-  }).catch(() => false);
-  if (!edited) return;
-  setTimeout(
-    () => void interaction.deleteReply().catch(() => {}),
-    FAILURE_TTL_MS,
-  ).unref();
-}
-
 export function replyEphemeral(
   interaction: CommandInteraction,
   content: string,
@@ -90,33 +60,4 @@ export function replyEphemeral(
       allowedMentions: { parse: [] },
     })
     .catch(() => {});
-}
-
-export function fitLines(lines: string[], limit: number): string {
-  let content = "";
-  for (const line of lines) {
-    if (content.length + line.length + 1 > limit) break;
-    content += (content ? "\n" : "") + line;
-  }
-  return content;
-}
-
-export function formatUnits(units: number): string {
-  return `${units > 0 ? "+" : ""}${units.toFixed(2)}u`;
-}
-
-export function formatRoi(roi: number): string {
-  return `${roi > 0 ? "+" : ""}${(roi * 100).toFixed(1)}%`;
-}
-
-export function formatOdds(odds: number): string {
-  return odds > 0 ? `+${odds}` : String(odds);
-}
-
-export function formatRecord(s: {
-  wins: number;
-  losses: number;
-  pushes: number;
-}): string {
-  return `${s.wins}W ${s.losses}L${s.pushes ? ` ${s.pushes}P` : ""}`;
 }

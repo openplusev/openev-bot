@@ -87,7 +87,17 @@ export async function updateGuildSettings(
   return next;
 }
 
-export function wantsAlert(s: GuildAlertSettings, e: LedgerEntry): boolean {
+// Shared by server channels and personal DM preferences.
+export type AlertFilter = Pick<
+  GuildAlertSettings,
+  "minEv" | "books" | "minConfidence"
+>;
+export type ArbFilter = Pick<
+  GuildAlertSettings,
+  "arbs" | "minArbProfit" | "books"
+>;
+
+export function wantsAlert(s: AlertFilter, e: LedgerEntry): boolean {
   return (
     e.alert_ev >= s.minEv &&
     (s.books.length === 0 || s.books.includes(e.book)) &&
@@ -96,7 +106,7 @@ export function wantsAlert(s: GuildAlertSettings, e: LedgerEntry): boolean {
 }
 
 // Every leg has to be at one of the guild's books or the arb cannot be placed.
-export function wantsArb(s: GuildAlertSettings, arb: Arb): boolean {
+export function wantsArb(s: ArbFilter, arb: Arb): boolean {
   return (
     s.arbs &&
     !arb.check &&

@@ -14,6 +14,7 @@ export function gameUrl(id: string): string {
 
 export const ARBS_URL = `${OPENEV_WEBSITE_URL}/arbs`;
 export const PROOF_URL = `${OPENEV_WEBSITE_URL}/proof`;
+export const SETTINGS_URL = `${OPENEV_WEBSITE_URL}/en/settings`;
 
 // The ledger records value bets from +2% EV, so a lower guild minimum changes nothing.
 export const LEDGER_MIN_EV = 0.02;

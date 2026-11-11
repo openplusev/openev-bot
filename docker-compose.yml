@@ -7,7 +7,7 @@ services:
     restart: always
     env_file: .env
     environment:
-      # The odds API is internal: openev-api joins the proxy network and is never exposed through Traefik.
+      # openev-api joins the proxy network; REST and the live feed (ws://openev-api:8080/v1/ws) skip Traefik.
       - OPENEV_API_URL=http://openev-api:8080
     volumes:
       - bot-data:/app/data

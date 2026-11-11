@@ -4,701 +4,1899 @@
  */
 
 export interface paths {
-    "/v1/arbs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["arbs"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  "/v1/arbs": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/books": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["books"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["arbs"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/auth/discord/authorize": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/debug/unmatched": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["unmatched"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["discord_authorize"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/auth/discord/callback": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/games": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["games"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["discord_callback"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/auth/logout": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/games/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["game"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["logout"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/bets": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/health": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["health"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["list_bets"];
+    put?: never;
+    post: operations["create_bet"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/bets/books-health": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/history": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["history"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["books_health"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/bets/stats": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/ledger": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ledger"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["stats"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/bets/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/stats": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["stats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["get_bet"];
+    put?: never;
+    post?: never;
+    delete: operations["delete_bet"];
+    options?: never;
+    head?: never;
+    patch: operations["update_bet"];
+    trace?: never;
+  };
+  "/v1/books": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/value-bets": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["value_bets"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["books"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/debug/unmatched": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/value-bets/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["value_bet"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["unmatched"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/games": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    get: operations["games"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/games/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["game"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/health": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["health"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/history": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["history"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/ledger": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ledger"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/me": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["me"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/me/settings": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["get_settings"];
+    put: operations["put_settings"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/stats": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["stats"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/value-bets": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["value_bets"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/value-bets/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["value_bet"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/ws": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Live push over WebSocket, protocol v1.
+     * @description The client sends JSON text frames (`ClientMessage`): `{"type":"subscribe","topic":"value_bets","min_ev":0.02}`,
+     *     `{"type":"unsubscribe","topic":"..."}`, `{"type":"ping"}`. Topics: `value_bets` (filters `min_ev`, `book`,
+     *     `include_check`, as on /v1/value-bets), `arbs` (`min_profit`, `include_check`), `ledger`, `game:{id}`
+     *     and `bet:{id}`. Every server frame is a `ServerMessage`: `v` (1), `seq` (per connection, starts at 1 and
+     *     rises by one), `ts`, `topic` and a `type`. The first frame is `welcome`. A subscribe is answered with a
+     *     snapshot (`value_bets_snapshot`, `arbs_snapshot`, `ledger_snapshot`, `game_snapshot`, `bet_snapshot`),
+     *     then diffs follow: value bet and arb added, updated, removed (computed every 10 s); ledger added,
+     *     updated, closed; price changed and removed and game removed (within about a second of the collector
+     *     publishing the price). Diffs carry whole objects keyed by id, so applying one twice is harmless.
+     *     The server pings every 20 s and closes a connection silent for 60 s (code 1001), one that falls
+     *     256 batches behind (1013) and one whose frame is not taken within 10 s. Reconnect and resubscribe
+     *     after a close; snapshots restore the state. Answers 503 when the server is at its connection limit.
+     */
+    get: operations["ws"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        Arb: {
-            away: string;
-            /** @description Profit so high one leg is probably stale. */
-            check: boolean;
-            game_id: string;
-            home: string;
-            id: string;
-            league: string;
-            legs: components["schemas"]["ArbLeg"][];
-            line?: string | null;
-            market: string;
-            period: string;
-            /**
-             * Format: double
-             * @description Guaranteed return per unit staked, e.g. 0.012 for 1.2%.
-             */
-            profit: number;
-            /** Format: date-time */
-            starts_at: string;
-        };
-        ArbLeg: {
-            book: string;
-            key: string;
-            odds: string;
-            /** Format: date-time */
-            seen_at: string;
-            side: string;
-            /**
-             * Format: double
-             * @description Share of the total stake on this leg so every outcome returns the same.
-             */
-            stake_share: number;
-        };
-        BetDetail: {
-            bet: components["schemas"]["ValueBet"];
-            book_history: components["schemas"]["PricePoint"][];
-            game: components["schemas"]["GameSummary"];
-            market: components["schemas"]["Market"];
-            sharp_history: components["schemas"]["PricePoint"][];
-        };
-        BookPrice: {
-            book: string;
-            /** Format: date-time */
-            changed_at?: string | null;
-            /**
-             * Format: double
-             * @description Expected value against the power devigged sharp price, when the market has one.
-             */
-            ev?: number | null;
-            /** @description Stable key of this outcome at this book, also the price history key. */
-            key: string;
-            max_stake?: string | null;
-            odds: string;
-            /** Format: date-time */
-            seen_at: string;
-        };
-        BookStatus: {
-            book: string;
-            /**
-             * Format: double
-             * @description Commission on net winnings, for exchanges.
-             */
-            commission?: number | null;
-            compared_prices: number;
-            events: number;
-            matched_events: number;
-            /**
-             * Format: double
-             * @description Median of |1/book odds - 1/Pinnacle odds| over compared outcomes: how closely the book tracks the sharp line.
-             */
-            median_implied_gap?: number | null;
-            /** Format: date-time */
-            newest_seen_at?: string | null;
-            quotes: number;
-        };
-        /** @enum {string} */
-        Confidence: "high" | "medium" | "low" | "check";
-        /** @description Fair probability of one outcome under each devig method. */
-        Devig: {
-            /** Format: double */
-            additive: number;
-            /** Format: double */
-            multiplicative: number;
-            /** Format: double */
-            power: number;
-            /** Format: double */
-            worst_case: number;
-        };
-        Game: {
-            markets: components["schemas"]["Market"][];
-            summary: components["schemas"]["GameSummary"];
-        };
-        GameSummary: {
-            arbs: number;
-            away: string;
-            /** Format: double */
-            best_ev?: number | null;
-            books: string[];
-            home: string;
-            id: string;
-            league: string;
-            markets: number;
-            sport: string;
-            /** Format: date-time */
-            starts_at: string;
-            value_bets: number;
-        };
-        Health: {
-            ok: boolean;
-        };
-        LedgerEntry: {
-            /** Format: double */
-            alert_ev: number;
-            alert_fair_odds: string;
-            alert_odds: string;
-            /** Format: date-time */
-            alerted_at: string;
-            away: string;
-            book: string;
-            closing_fair_odds?: string | null;
-            /**
-             * Format: double
-             * @description Alert price against the closing fair price: the value the alert really had.
-             */
-            clv?: number | null;
-            confidence: components["schemas"]["Confidence"];
-            game_id: string;
-            home: string;
-            id: string;
-            /** Format: date-time */
-            last_fair_at?: string | null;
-            last_fair_odds?: string | null;
-            league: string;
-            line?: string | null;
-            market: string;
-            period: string;
-            sharp_key: string;
-            side: string;
-            /** Format: date-time */
-            starts_at: string;
-            status: components["schemas"]["LedgerStatus"];
-        };
-        LedgerStats: {
-            alerts: number;
-            /** Format: double */
-            avg_alert_ev?: number | null;
-            /** Format: double */
-            avg_clv?: number | null;
-            beat_close: number;
-            closed: number;
-            open: number;
-        };
-        /** @enum {string} */
-        LedgerStatus: "open" | "closed" | "no_close";
-        LedgerView: {
-            entries: components["schemas"]["LedgerEntry"][];
-            stats: components["schemas"]["LedgerStats"];
-        };
-        Market: {
-            kind: string;
-            line?: string | null;
-            outcomes: components["schemas"]["Outcome"][];
-            period: string;
-            sharp_max_stake?: string | null;
-            /** Format: double */
-            sharp_overround?: number | null;
-        };
-        Outcome: {
-            fair?: components["schemas"]["Devig"] | null;
-            fair_odds?: string | null;
-            /** @description Soft book prices, best first. */
-            prices: components["schemas"]["BookPrice"][];
-            sharp?: components["schemas"]["BookPrice"] | null;
-            side: string;
-        };
-        PricePoint: {
-            /** Format: date-time */
-            at: string;
-            odds: string;
-            open: boolean;
-        };
-        Stats: {
-            arbs: number;
-            book_events: number;
-            books: {
-                [key: string]: number;
-            };
-            compared_prices: number;
-            matched_events: number;
-            quotes: number;
-            sharp_events: number;
-            /** Format: date-time */
-            updated_at?: string | null;
-            value_bets: number;
-        };
-        /** @description A book event no sharp event matched, with the sharp fixtures kicking off within ten minutes. */
-        Unmatched: {
-            book: string;
-            book_event: string;
-            sharp_candidates: string[];
-            /** Format: date-time */
-            starts_at: string;
-        };
-        ValueBet: {
-            away: string;
-            book: string;
-            /** Format: date-time */
-            book_changed_at?: string | null;
-            /** Format: date-time */
-            book_seen_at: string;
-            confidence: components["schemas"]["Confidence"];
-            /**
-             * Format: double
-             * @description Expected value per unit staked against the power devigged sharp price.
-             */
-            ev: number;
-            /**
-             * Format: double
-             * @description Expected value against the least favourable devig method; the cautious number.
-             */
-            ev_conservative: number;
-            fair: components["schemas"]["Devig"];
-            fair_odds: string;
-            /** Format: double */
-            fair_probability: number;
-            game_id: string;
-            home: string;
-            id: string;
-            league: string;
-            line?: string | null;
-            market: string;
-            odds: string;
-            period: string;
-            sharp_key: string;
-            /** @description Largest stake the sharp book accepts on this market: the liquidity behind the fair price. */
-            sharp_max_stake?: string | null;
-            sharp_odds: string;
-            /** Format: double */
-            sharp_overround: number;
-            /** Format: date-time */
-            sharp_seen_at: string;
-            side: string;
-            /** Format: date-time */
-            starts_at: string;
-        };
-        ValueBetList: {
-            bets: components["schemas"]["ValueBet"][];
-            stats: components["schemas"]["Stats"];
-        };
+  schemas: {
+    Arb: {
+      away: string;
+      away_image?: string | null;
+      /** @description Profit so high one leg is probably stale. */
+      check: boolean;
+      game_id: string;
+      home: string;
+      home_image?: string | null;
+      id: string;
+      league: string;
+      league_country?: string | null;
+      legs: components["schemas"]["ArbLeg"][];
+      line?: string | null;
+      market: string;
+      period: string;
+      /**
+       * Format: double
+       * @description Guaranteed return per unit staked, e.g. 0.012 for 1.2%.
+       */
+      profit: number;
+      /** Format: date-time */
+      starts_at: string;
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    ArbLeg: {
+      book: string;
+      key: string;
+      odds: string;
+      /** Format: date-time */
+      seen_at: string;
+      side: string;
+      /**
+       * Format: double
+       * @description Share of the total stake on this leg so every outcome returns the same.
+       */
+      stake_share: number;
+    };
+    AuthSession: {
+      /** Format: date-time */
+      expires_at: string;
+      /** @description Opaque bearer token; only its hash is stored, so it cannot be shown again. */
+      token: string;
+      user: components["schemas"]["User"];
+    };
+    Bet: {
+      away: string;
+      away_image?: string | null;
+      book: string;
+      closing_fair_odds?: string | null;
+      /**
+       * Format: double
+       * @description odds / closing_fair_odds - 1: above zero means the bet beat the close.
+       */
+      clv?: number | null;
+      /** Format: date-time */
+      created_at: string;
+      /**
+       * Format: double
+       * @description odds / fair_odds_at_bet - 1.
+       */
+      ev_at_bet?: number | null;
+      /** @description Sharp fair odds when the bet was placed. */
+      fair_odds_at_bet?: string | null;
+      home: string;
+      /** @description TheSportsDB badge or photo, 100 px. */
+      home_image?: string | null;
+      /** Format: uuid */
+      id: string;
+      league: string;
+      /** @description ISO 3166 alpha 2 of the league, EU or WORLD for international competitions. */
+      league_country?: string | null;
+      line?: string | null;
+      /** @description True once kickoff passed and the closing line was looked up. */
+      line_closed: boolean;
+      /** @description three_way, two_way, total or asian_handicap. */
+      market: string;
+      notes: string;
+      odds: string;
+      /** @description Total returned including stake; set once settled. */
+      payout?: string | null;
+      /** @description full_time, regular_time, first_half or other. */
+      period: string;
+      /** Format: date-time */
+      placed_at: string;
+      /** @description payout - stake; set once settled. */
+      profit?: string | null;
+      /** Format: date-time */
+      settled_at?: string | null;
+      sharp_key?: string | null;
+      /** @description Largest stake the sharp book took on this market when the bet was placed: the liquidity signal. */
+      sharp_max_stake?: string | null;
+      /** @description home, draw, away, over or under. */
+      side: string;
+      stake: string;
+      /** Format: date-time */
+      starts_at: string;
+      status: components["schemas"]["BetStatus"];
+      /** @description The value bet this was tracked from, if any. */
+      value_bet_id?: string | null;
+    };
+    BetDetail: {
+      bet: components["schemas"]["ValueBet"];
+      book_history: components["schemas"]["PricePoint"][];
+      game: components["schemas"]["GameSummary"];
+      market: components["schemas"]["Market"];
+      sharp_history: components["schemas"]["PricePoint"][];
+    };
+    /**
+     * @description A value bet field that moved since the previous snapshot.
+     * @enum {string}
+     */
+    BetField:
+      | "odds"
+      | "fair_odds"
+      | "ev"
+      | "ev_conservative"
+      | "confidence"
+      | "sharp_odds"
+      | "sharp_max_stake"
+      | "exchange_probability";
+    /**
+     * @description Every field is optional; only given fields change. Settling: set `status`; `payout` defaults to
+     *     stake times odds for won, 0 for lost, the stake for push and void (pass it for half wins).
+     */
+    BetPatch: {
+      away?: string | null;
+      book?: string | null;
+      home?: string | null;
+      league?: string | null;
+      notes?: string | null;
+      odds?: string | null;
+      payout?: string | null;
+      /** Format: date-time */
+      placed_at?: string | null;
+      /**
+       * Format: date-time
+       * @description Defaults to now when the bet is settled.
+       */
+      settled_at?: string | null;
+      stake?: string | null;
+      /** Format: date-time */
+      starts_at?: string | null;
+      status?: components["schemas"]["BetStatus"] | null;
+    };
+    BetStats: {
+      /** @description Most bets first. */
+      by_book: components["schemas"]["BookTotals"][];
+      /** @description Oldest first. */
+      by_month: components["schemas"]["MonthTotals"][];
+      /** @description One point per day with a settled bet, oldest first, for the profit chart. */
+      daily: components["schemas"]["DailyProfit"][];
+      totals: components["schemas"]["BetTotals"];
+    };
+    /** @enum {string} */
+    BetStatus: "open" | "won" | "lost" | "push" | "void";
+    BetTotals: {
+      /** Format: double */
+      avg_clv?: number | null;
+      /** Format: double */
+      avg_ev_at_bet?: number | null;
+      /**
+       * Format: double
+       * @description Share of bets with a closing line that beat it.
+       */
+      beat_close_share?: number | null;
+      bets: number;
+      /** @description Bets with a closing line. */
+      closed: number;
+      /** @description Sum of stake times EV at bet over every non void bet with a fair price: what the bets were worth. */
+      expected_profit: string;
+      lost: number;
+      open: number;
+      profit: string;
+      push: number;
+      /**
+       * Format: double
+       * @description profit / staked.
+       */
+      roi?: number | null;
+      /** @description Stakes of settled bets (won, lost, push); void stakes came back and do not count. */
+      staked: string;
+      void: number;
+      won: number;
+    };
+    BookHealth: {
+      avg_stake: string;
+      /** Format: double */
+      beat_close_share?: number | null;
+      bets: number;
+      book: string;
+      /**
+       * Format: double
+       * @description Share of bets with a known sharp limit that were on a market where it was under 1000; None without limit data.
+       */
+      low_liquidity_share?: number | null;
+      /** @description Unknown under 5 bets; otherwise low with no warning, medium with one, high with two or more. */
+      risk: components["schemas"]["HealthRisk"];
+      /**
+       * Format: double
+       * @description Share of stakes that are a whole multiple of 5.
+       */
+      round_stake_share: number;
+      /**
+       * Format: double
+       * @description Share of bets tracked from a value bet or placed above the fair price.
+       */
+      value_bet_share: number;
+      warnings: components["schemas"]["HealthWarning"][];
+    };
+    BookPrice: {
+      book: string;
+      /** Format: date-time */
+      changed_at?: string | null;
+      /**
+       * Format: double
+       * @description Expected value against the power devigged sharp price, when the market has one.
+       */
+      ev?: number | null;
+      /** @description Stable key of this outcome at this book, also the price history key. */
+      key: string;
+      max_stake?: string | null;
+      odds: string;
+      /** Format: date-time */
+      seen_at: string;
+      /** @description Missed by the book's latest sweep: shown, but kept out of value bets and arbs. */
+      stale: boolean;
+    };
+    BookStatus: {
+      book: string;
+      /**
+       * Format: double
+       * @description Commission on net winnings, for exchanges.
+       */
+      commission?: number | null;
+      compared_prices: number;
+      events: number;
+      matched_events: number;
+      /**
+       * Format: double
+       * @description Median of |1/book odds - 1/Pinnacle odds| over compared outcomes: how closely the book tracks the sharp line.
+       */
+      median_implied_gap?: number | null;
+      /** Format: date-time */
+      newest_seen_at?: string | null;
+      quotes: number;
+      /**
+       * Format: double
+       * @description Prediction market taker fee rate: each contract bought at price p costs rate x p x (1 minus p) on top.
+       */
+      taker_fee?: number | null;
+    };
+    BookTotals: {
+      book: string;
+      totals: components["schemas"]["BetTotals"];
+    };
+    /** @description Everything a client sends, as JSON text frames. */
+    ClientMessage:
+      | {
+          /** @description `value_bets`: only this book. */
+          book?: string | null;
+          /** @description `value_bets` and `arbs`: include entries flagged for review. */
+          include_check?: boolean | null;
+          /**
+           * Format: double
+           * @description `value_bets`: minimum expected value, e.g. 0.02.
+           */
+          min_ev?: number | null;
+          /**
+           * Format: double
+           * @description `arbs`: minimum profit.
+           */
+          min_profit?: number | null;
+          topic: string;
+          /** @enum {string} */
+          type: "subscribe";
+        }
+      | {
+          topic: string;
+          /** @enum {string} */
+          type: "unsubscribe";
+        }
+      | {
+          token: string;
+          /** @enum {string} */
+          type: "auth";
+        }
+      | {
+          /** @enum {string} */
+          type: "ping";
+        };
+    /** @enum {string} */
+    Confidence: "high" | "medium" | "low" | "check";
+    DailyProfit: {
+      cumulative_profit: string;
+      /**
+       * Format: date
+       * @description Settlement day, UTC.
+       */
+      date: string;
+      profit: string;
+      settled: number;
+    };
+    /** @description Fair probability of one outcome under each devig method. */
+    Devig: {
+      /** Format: double */
+      additive: number;
+      /** Format: double */
+      multiplicative: number;
+      /** Format: double */
+      power: number;
+      /** Format: double */
+      worst_case: number;
+    };
+    DiscordAuthorize: {
+      /** @description Echoed back by Discord; pass it to the callback unchanged. */
+      state: string;
+      /** @description Discord consent page to send the user to. */
+      url: string;
+    };
+    DiscordCallback: {
+      code: string;
+      redirect_uri: string;
+      state: string;
+    };
+    ErrorBody: {
+      /** @description Stable machine readable code for errors the client translates. */
+      code?: string | null;
+      error: string;
+    };
+    /** @enum {string} */
+    ErrorCode:
+      | "bad_message"
+      | "unknown_topic"
+      | "too_many_subscriptions"
+      | "auth_required"
+      | "auth_unavailable";
+    /** @description Everything the server sends. Diffs carry whole objects, so applying one twice changes nothing. */
+    Event:
+      | {
+          /** Format: int64 */
+          heartbeat_secs: number;
+          max_subscriptions: number;
+          /** Format: int32 */
+          protocol: number;
+          /** @enum {string} */
+          type: "welcome";
+        }
+      | {
+          bets: components["schemas"]["ValueBet"][];
+          stats: components["schemas"]["Stats"];
+          /** @enum {string} */
+          type: "value_bets_snapshot";
+        }
+      | {
+          bet: components["schemas"]["ValueBet"];
+          /** @enum {string} */
+          type: "value_bet_added";
+        }
+      | {
+          bet: components["schemas"]["ValueBet"];
+          changed: components["schemas"]["BetField"][];
+          /** @enum {string} */
+          type: "value_bet_updated";
+        }
+      | {
+          game_id: string;
+          id: string;
+          /** @enum {string} */
+          type: "value_bet_removed";
+        }
+      | {
+          arbs: components["schemas"]["Arb"][];
+          /** @enum {string} */
+          type: "arbs_snapshot";
+        }
+      | {
+          arb: components["schemas"]["Arb"];
+          /** @enum {string} */
+          type: "arb_added";
+        }
+      | {
+          arb: components["schemas"]["Arb"];
+          /** @enum {string} */
+          type: "arb_updated";
+        }
+      | {
+          game_id: string;
+          id: string;
+          /** @enum {string} */
+          type: "arb_removed";
+        }
+      | {
+          entries: components["schemas"]["LedgerEntry"][];
+          stats: components["schemas"]["LedgerStats"];
+          /** @enum {string} */
+          type: "ledger_snapshot";
+        }
+      | {
+          entry: components["schemas"]["LedgerEntry"];
+          stats: components["schemas"]["LedgerStats"];
+          /** @enum {string} */
+          type: "ledger_added";
+        }
+      | {
+          entry: components["schemas"]["LedgerEntry"];
+          stats: components["schemas"]["LedgerStats"];
+          /** @enum {string} */
+          type: "ledger_updated";
+        }
+      | {
+          entry: components["schemas"]["LedgerEntry"];
+          stats: components["schemas"]["LedgerStats"];
+          /** @enum {string} */
+          type: "ledger_closed";
+        }
+      | {
+          game?: components["schemas"]["Game"] | null;
+          game_id: string;
+          /** @enum {string} */
+          type: "game_snapshot";
+        }
+      | {
+          bet?: components["schemas"]["ValueBet"] | null;
+          id: string;
+          /** @enum {string} */
+          type: "bet_snapshot";
+        }
+      | {
+          price: components["schemas"]["LivePrice"];
+          /** @enum {string} */
+          type: "price_changed";
+        }
+      | {
+          game_id: string;
+          key: string;
+          /** @enum {string} */
+          type: "price_removed";
+        }
+      | {
+          game_id: string;
+          /** @enum {string} */
+          type: "game_removed";
+        }
+      | {
+          /** @enum {string} */
+          type: "unsubscribed";
+        }
+      | {
+          /** @enum {string} */
+          type: "pong";
+        }
+      | {
+          code: components["schemas"]["ErrorCode"];
+          message: string;
+          /** @enum {string} */
+          type: "error";
+        };
+    Game: {
+      markets: components["schemas"]["Market"][];
+      summary: components["schemas"]["GameSummary"];
+    };
+    GameSummary: {
+      arbs: number;
+      away: string;
+      away_image?: string | null;
+      /** Format: double */
+      best_ev?: number | null;
+      books: string[];
+      home: string;
+      /** @description TheSportsDB badge or photo, 100 px. */
+      home_image?: string | null;
+      id: string;
+      league: string;
+      /** @description ISO 3166 alpha 2 of the league, EU or WORLD for international competitions. */
+      league_country?: string | null;
+      markets: number;
+      sport: string;
+      /** Format: date-time */
+      starts_at: string;
+      value_bets: number;
+    };
+    Health: {
+      ok: boolean;
+    };
+    /** @enum {string} */
+    HealthRisk: "unknown" | "low" | "medium" | "high";
+    HealthWarning: {
+      /** @description Stable code for translations. */
+      code: components["schemas"]["HealthWarningCode"];
+      /** @description Plain English text. */
+      message: string;
+    };
+    /** @enum {string} */
+    HealthWarningCode:
+      "all_value_bets" | "never_round_stakes" | "low_liquidity" | "beats_close";
+    LedgerEntry: {
+      /** Format: double */
+      alert_ev: number;
+      alert_fair_odds: string;
+      alert_odds: string;
+      /** Format: date-time */
+      alerted_at: string;
+      away: string;
+      away_image?: string | null;
+      book: string;
+      closing_fair_odds?: string | null;
+      /**
+       * Format: double
+       * @description Alert price against the closing fair price: the value the alert really had.
+       */
+      clv?: number | null;
+      confidence: components["schemas"]["Confidence"];
+      game_id: string;
+      home: string;
+      /** @description Filled from the current participant map when served. */
+      home_image?: string | null;
+      id: string;
+      /** Format: date-time */
+      last_fair_at?: string | null;
+      last_fair_odds?: string | null;
+      league: string;
+      league_country?: string | null;
+      line?: string | null;
+      market: string;
+      period: string;
+      sharp_key: string;
+      side: string;
+      /** Format: date-time */
+      starts_at: string;
+      status: components["schemas"]["LedgerStatus"];
+    };
+    LedgerStats: {
+      alerts: number;
+      /** Format: double */
+      avg_alert_ev?: number | null;
+      /** Format: double */
+      avg_clv?: number | null;
+      beat_close: number;
+      closed: number;
+      open: number;
+    };
+    /** @enum {string} */
+    LedgerStatus: "open" | "closed" | "no_close";
+    LedgerView: {
+      entries: components["schemas"]["LedgerEntry"][];
+      stats: components["schemas"]["LedgerStats"];
+    };
+    /** @description One book's price on one outcome of a game. */
+    LivePrice: {
+      book: string;
+      /** Format: double */
+      ev?: number | null;
+      game_id: string;
+      /** @description Outcome key at this book, as in `BookPrice.key`. */
+      key: string;
+      line?: string | null;
+      market: string;
+      odds: string;
+      period: string;
+      /** Format: date-time */
+      seen_at: string;
+      side: string;
+      stale: boolean;
+    };
+    Market: {
+      kind: string;
+      line?: string | null;
+      outcomes: components["schemas"]["Outcome"][];
+      period: string;
+      sharp_max_stake?: string | null;
+      /** Format: double */
+      sharp_overround?: number | null;
+    };
+    MonthTotals: {
+      /** @description YYYY-MM of placed_at, UTC. */
+      month: string;
+      totals: components["schemas"]["BetTotals"];
+    };
+    /**
+     * @description Either `from_value_bet` (copies the event, market, fair odds and sharp key from the current
+     *     value bet) or the manual fields `book`, `home`, `away`, `starts_at`, `market`, `side`, `odds`.
+     */
+    NewBet: {
+      away?: string | null;
+      /** @description Overrides the value bet's book when given. */
+      book?: string | null;
+      /** @description Fair odds for a manual bet, if the user knows them. */
+      fair_odds?: string | null;
+      /** @description Id of a value bet in the current snapshot (`GET /v1/value-bets`). */
+      from_value_bet?: string | null;
+      home?: string | null;
+      league?: string | null;
+      line?: string | null;
+      market?: string | null;
+      notes?: string | null;
+      /** @description Odds actually taken; defaults to the value bet's odds, required for manual bets. */
+      odds?: string | null;
+      /** @description Defaults to full_time. */
+      period?: string | null;
+      /**
+       * Format: date-time
+       * @description Defaults to now.
+       */
+      placed_at?: string | null;
+      /** @description Sharp outcome key for a manual bet; enables the closing line. */
+      sharp_key?: string | null;
+      side?: string | null;
+      stake: string;
+      /** Format: date-time */
+      starts_at?: string | null;
+    };
+    Outcome: {
+      fair?: components["schemas"]["Devig"] | null;
+      fair_odds?: string | null;
+      /** @description Soft book prices, best first. */
+      prices: components["schemas"]["BookPrice"][];
+      sharp?: components["schemas"]["BookPrice"] | null;
+      side: string;
+    };
+    PricePoint: {
+      /** Format: date-time */
+      at: string;
+      odds: string;
+      open: boolean;
+    };
+    /** @description Envelope of every server message on `/v1/ws` and on the `openev:events` channel. */
+    ServerMessage: components["schemas"]["Event"] & {
+      /**
+       * Format: int64
+       * @description Increases by one with every message on a connection (per API instance on Pub/Sub).
+       */
+      seq: number;
+      /** @description The subscription this message answers or belongs to. */
+      topic?: string | null;
+      /** Format: date-time */
+      ts: string;
+      /**
+       * Format: int32
+       * @description Protocol version, 1.
+       */
+      v: number;
+    };
+    Settings: {
+      /** @description Bankroll in `currency`, the base for Kelly stakes. */
+      bankroll: string;
+      /** @description ISO 4217 code, e.g. EUR. */
+      currency: string;
+      /** @description Share of full Kelly to stake, e.g. 0.25 for quarter Kelly. */
+      kelly_fraction: string;
+      /** @description Books the user holds accounts at (book ids as in value bets). */
+      preferred_books: string[];
+    };
+    Stats: {
+      arbs: number;
+      book_events: number;
+      books: {
+        [key: string]: number;
+      };
+      compared_prices: number;
+      matched_events: number;
+      quotes: number;
+      sharp_events: number;
+      /** Format: date-time */
+      updated_at?: string | null;
+      value_bets: number;
+    };
+    /** @description A book event no sharp event matched, with the sharp fixtures kicking off within ten minutes. */
+    Unmatched: {
+      book: string;
+      book_event: string;
+      sharp_candidates: string[];
+      /** Format: date-time */
+      starts_at: string;
+    };
+    User: {
+      avatar_url: string;
+      /** Format: date-time */
+      created_at: string;
+      discord_id: string;
+      /** @description Discord global name, or the username when none is set. */
+      display_name: string;
+      /** Format: uuid */
+      id: string;
+      username: string;
+    };
+    ValueBet: {
+      away: string;
+      away_image?: string | null;
+      book: string;
+      /** Format: date-time */
+      book_changed_at?: string | null;
+      /** Format: date-time */
+      book_seen_at: string;
+      confidence: components["schemas"]["Confidence"];
+      /**
+       * Format: double
+       * @description Expected value per unit staked against the power devigged sharp price.
+       */
+      ev: number;
+      /**
+       * Format: double
+       * @description Expected value against the least favourable devig method; the cautious number.
+       */
+      ev_conservative: number;
+      /**
+       * Format: double
+       * @description Fair probability from Betfair Exchange and Matchbook back prices, when either has a tight book on this market.
+       */
+      exchange_probability?: number | null;
+      fair: components["schemas"]["Devig"];
+      fair_odds: string;
+      /** Format: double */
+      fair_probability: number;
+      game_id: string;
+      home: string;
+      home_image?: string | null;
+      id: string;
+      league: string;
+      league_country?: string | null;
+      line?: string | null;
+      market: string;
+      odds: string;
+      period: string;
+      sharp_key: string;
+      /** @description Largest stake the sharp book accepts on this market: the liquidity behind the fair price. */
+      sharp_max_stake?: string | null;
+      sharp_odds: string;
+      /** Format: double */
+      sharp_overround: number;
+      /** Format: date-time */
+      sharp_seen_at: string;
+      side: string;
+      /** Format: date-time */
+      starts_at: string;
+    };
+    ValueBetList: {
+      bets: components["schemas"]["ValueBet"][];
+      stats: components["schemas"]["Stats"];
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    arbs: {
-        parameters: {
-            query?: {
-                min_profit?: number;
-                /** @description Include arbs flagged as probably stale. */
-                include_check?: boolean;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Current arbitrage, best profit first */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Arb"][];
-                };
-            };
-        };
+  arbs: {
+    parameters: {
+      query?: {
+        min_profit?: number;
+        /** @description Include arbs flagged as probably stale. */
+        include_check?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    books: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Current arbitrage, best profit first */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BookStatus"][];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["Arb"][];
         };
+      };
     };
-    unmatched: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Book events without a sharp match */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Unmatched"][];
-                };
-            };
-        };
+  };
+  discord_authorize: {
+    parameters: {
+      query: {
+        /** @description Where Discord sends the user back; must be in `DISCORD_REDIRECT_URIS`. */
+        redirect_uri: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    games: {
-        parameters: {
-            query?: {
-                /** @description Matches team or league names, case insensitive. */
-                q?: string;
-                league?: string;
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Discord consent URL and the state to check on return */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Upcoming games with a sharp price, by kickoff */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GameSummary"][];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["DiscordAuthorize"];
         };
+      };
+      /** @description redirect_uri not allowed (code invalid_redirect_uri) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+      /** @description Discord login is not configured (code discord_unavailable) */
+      502: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
     };
-    game: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Game id */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Every market with every book's price and the fair line */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Game"];
-                };
-            };
-            /** @description Unknown or started game */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  discord_callback: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    health: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Health"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DiscordCallback"];
+      };
     };
-    history: {
-        parameters: {
-            query: {
-                /** @description Outcome key from a price (`key` field). */
-                key: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description Signed in; the account is created on first login */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Price changes of one outcome at one book, oldest first */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PricePoint"][];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["AuthSession"];
         };
+      };
+      /** @description State unknown, expired, used or for another redirect_uri (code invalid_state), or redirect_uri not allowed (code invalid_redirect_uri) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+      /** @description Discord refused the code (code discord_denied) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+      /** @description Discord unreachable or login not configured (code discord_unavailable) */
+      502: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
     };
-    ledger: {
-        parameters: {
-            query?: {
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Every alert ever sent with its closing line, newest first */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LedgerView"];
-                };
-            };
-        };
+  };
+  logout: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    stats: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Session ended */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Stats"];
-                };
-            };
+        content?: never;
+      };
+      /** @description Not signed in */
+      401: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
     };
-    value_bets: {
-        parameters: {
-            query?: {
-                /** @description Minimum expected value, e.g. 0.02 for +2%. */
-                min_ev?: number;
-                /** @description Only this book (e.g. virginbetuk). */
-                book?: string;
-                /** @description Include bets flagged for review (EV too high to be trusted). */
-                include_check?: boolean;
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Current value bets, best EV first */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValueBetList"];
-                };
-            };
-        };
+  };
+  list_bets: {
+    parameters: {
+      query?: {
+        status?: components["schemas"]["BetStatus"];
+        book?: string;
+        /** @description Placed at or after. */
+        from?: string;
+        /** @description Placed before. */
+        to?: string;
+        /** @description Newest first; defaults to 500. */
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    value_bet: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Value bet id */
-                id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description The user's bets, newest first */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description The bet with its full market and price history */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BetDetail"];
-                };
-            };
-            /** @description No longer a value bet */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
+        content: {
+          "application/json": components["schemas"]["Bet"][];
         };
+      };
+      /** @description Not signed in */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
     };
+  };
+  create_bet: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["NewBet"];
+      };
+    };
+    responses: {
+      /** @description Tracked bet */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Bet"];
+        };
+      };
+      /** @description Missing or invalid field */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+      /** @description Not signed in */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+      /** @description The value bet is no longer in the snapshot */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  books_health: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Per book betting patterns that books use to limit accounts, from the user's own bets, most bets first */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BookHealth"][];
+        };
+      };
+      /** @description Not signed in */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  stats: {
+    parameters: {
+      query?: {
+        status?: components["schemas"]["BetStatus"];
+        book?: string;
+        /** @description Placed at or after. */
+        from?: string;
+        /** @description Placed before. */
+        to?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Profit, ROI, EV and CLV over the filtered bets */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BetStats"];
+        };
+      };
+      /** @description Not signed in */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  get_bet: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Bet id */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description One bet */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Bet"];
+        };
+      };
+      /** @description Not signed in */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+      /** @description No such bet */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  delete_bet: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Bet id */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Deleted */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Not signed in */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+      /** @description No such bet */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  update_bet: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Bet id */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["BetPatch"];
+      };
+    };
+    responses: {
+      /** @description Updated bet */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Bet"];
+        };
+      };
+      /** @description Invalid value */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+      /** @description Not signed in */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+      /** @description No such bet */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  books: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BookStatus"][];
+        };
+      };
+    };
+  };
+  unmatched: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Book events without a sharp match */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Unmatched"][];
+        };
+      };
+    };
+  };
+  games: {
+    parameters: {
+      query?: {
+        /** @description Matches team or league names, case insensitive. */
+        q?: string;
+        league?: string;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Upcoming games with a sharp price, by kickoff */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GameSummary"][];
+        };
+      };
+    };
+  };
+  game: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Game id */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Every market with every book's price and the fair line */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Game"];
+        };
+      };
+      /** @description Unknown or started game */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  health: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Health"];
+        };
+      };
+    };
+  };
+  history: {
+    parameters: {
+      query: {
+        /** @description Outcome key from a price (`key` field). */
+        key: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Price changes of one outcome at one book, oldest first */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PricePoint"][];
+        };
+      };
+    };
+  };
+  ledger: {
+    parameters: {
+      query?: {
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Every alert ever sent with its closing line, newest first */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["LedgerView"];
+        };
+      };
+    };
+  };
+  me: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description The signed in user */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["User"];
+        };
+      };
+      /** @description Not signed in */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  get_settings: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Bankroll and staking settings, defaults until first saved */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Settings"];
+        };
+      };
+      /** @description Not signed in */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  put_settings: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["Settings"];
+      };
+    };
+    responses: {
+      /** @description Saved settings */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Settings"];
+        };
+      };
+      /** @description Invalid value */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+      /** @description Not signed in */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  stats: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Stats"];
+        };
+      };
+    };
+  };
+  value_bets: {
+    parameters: {
+      query?: {
+        /** @description Minimum expected value, e.g. 0.02 for +2%. */
+        min_ev?: number;
+        /** @description Only this book (e.g. virginbetuk). */
+        book?: string;
+        /** @description Include bets flagged for review (EV too high to be trusted). */
+        include_check?: boolean;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Current value bets, best EV first */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ValueBetList"];
+        };
+      };
+    };
+  };
+  value_bet: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Value bet id */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description The bet with its full market and price history */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BetDetail"];
+        };
+      };
+      /** @description No longer a value bet */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ws: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Switches to the WebSocket protocol; every frame is a ServerMessage */
+      101: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ServerMessage"];
+        };
+      };
+      /** @description Connection limit reached */
+      503: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
 }

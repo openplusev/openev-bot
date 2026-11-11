@@ -1,30 +1,31 @@
 import { type AlertMessage, alertMessage } from "@/core/embeds/alert.embed";
 import { arbMessage } from "@/core/embeds/arb.embed";
+import { dmAlert, dmArb } from "@/core/services/dm-alerts";
 import {
-  DEFAULT_SETTINGS,
   type GuildAlertSettings,
   allGuildSettings,
-  loadGuildSettings,
   wantsAlert,
   wantsArb,
 } from "@/core/services/guild-settings";
 import { type FeedChannel, feedChannel } from "@/core/utils/channel.utils";
 import { logger } from "@/lib/logger";
 import {
+  type Arb,
   type LedgerEntry,
   type ValueBet,
-  fetchArbs,
   fetchLedger,
   fetchValueBet,
 } from "@/lib/openev/client";
+import { type FeedEvent, connectLive } from "@/lib/openev/live";
 import { dataFile, isRecord, readJson, writeJson } from "@/lib/state";
 import { PROOF_URL } from "@/shared/config/openev";
 import type { Client } from "discord.js";
 
-const INTERVAL_MS = 15_000;
 // Mirrors the default row limit of GET /v1/ledger.
 const LEDGER_PAGE = 500;
-const MAX_PER_TICK = 20;
+const MAX_PER_BATCH = 20;
+// One snapshot sends its ledger_added events back to back; they are posted as one batch.
+const BATCH_WAIT_MS = 500;
 // An arb that stays away this long is posted again when it returns.
 const ARB_FORGET_MS = 6 * 60 * 60 * 1000;
 const FILE = dataFile("openev-alerts.json");
@@ -36,13 +37,13 @@ interface Watermark {
 }
 
 interface FeedState {
-  // Null until the first poll, which marks the current ledger as seen instead of posting it.
+  // Null until the first catch up, which marks the current ledger as seen instead of posting it.
   ledger: Watermark | null;
-  // Arb id to the last time it was listed.
+  // Arb id to the last time it was listed; null until the first arbs snapshot.
   arbs: Record<string, string> | null;
 }
 
-interface Target {
+export interface Target {
   name: string;
   settings: GuildAlertSettings;
   sendAlert: (message: AlertMessage) => Promise<void>;
@@ -51,8 +52,16 @@ interface Target {
   sendText: (content: string) => Promise<void>;
 }
 
+export interface FeedSinks {
+  targets: () => Target[];
+  persist: boolean;
+}
+
 let state: FeedState = { ledger: null, arbs: null };
-let running = false;
+// Every change to `state` runs through this chain, so catch up and live events never interleave.
+let chain: Promise<void> = Promise.resolve();
+let pending: LedgerEntry[] = [];
+let pendingTimer: ReturnType<typeof setTimeout> | null = null;
 
 function parseState(value: unknown): FeedState {
   if (!isRecord(value)) return { ledger: null, arbs: null };
@@ -97,23 +106,26 @@ function watermarkOf(entries: LedgerEntry[]): Watermark | null {
   };
 }
 
-function freshEntries(entries: LedgerEntry[], mark: Watermark): LedgerEntry[] {
+function isFresh(e: LedgerEntry, mark: Watermark): boolean {
+  const at = Date.parse(e.alerted_at);
   const sinceMs = Date.parse(mark.since);
-  const seen = new Set(mark.seen);
-  return entries
-    .filter((e) => {
-      const at = Date.parse(e.alerted_at);
-      return at > sinceMs || (at === sinceMs && !seen.has(e.id));
-    })
-    .sort(
-      (a, b) =>
-        Date.parse(a.alerted_at) - Date.parse(b.alerted_at) ||
-        a.id.localeCompare(b.id),
-    );
+  return at > sinceMs || (at === sinceMs && !mark.seen.includes(e.id));
+}
+
+function advance(mark: Watermark, e: LedgerEntry): Watermark {
+  const at = Date.parse(e.alerted_at);
+  const sinceMs = Date.parse(mark.since);
+  if (at > sinceMs) return { since: e.alerted_at, seen: [e.id] };
+  if (at === sinceMs && !mark.seen.includes(e.id)) {
+    return { since: mark.since, seen: [...mark.seen, e.id] };
+  }
+  return mark;
 }
 
 // Undefined when the API could not be asked; the embed then leaves the live price out.
-async function liveBet(id: string): Promise<ValueBet | null | undefined> {
+export async function liveBet(
+  id: string,
+): Promise<ValueBet | null | undefined> {
   try {
     return await fetchValueBet(id);
   } catch (err) {
@@ -122,9 +134,69 @@ async function liveBet(id: string): Promise<ValueBet | null | undefined> {
   }
 }
 
-async function postAlerts(targets: Target[]): Promise<void> {
+function run(sinks: FeedSinks, job: () => Promise<void>): void {
+  chain = chain
+    .then(job)
+    .catch((err) =>
+      logger.error("Alerts feed job failed", { error: String(err) }),
+    )
+    .then(() => (sinks.persist ? writeJson(FILE, state) : undefined));
+}
+
+// Posts the entries the watermark has not seen, oldest first, at most MAX_PER_BATCH per target.
+async function deliverBatch(
+  sinks: FeedSinks,
+  entries: LedgerEntry[],
+): Promise<void> {
+  const start = state.ledger;
+  if (!start) return;
+  const fresh = entries
+    .filter((e) => isFresh(e, start))
+    .sort(
+      (a, b) =>
+        Date.parse(a.alerted_at) - Date.parse(b.alerted_at) ||
+        a.id.localeCompare(b.id),
+    );
+  if (fresh.length === 0) return;
+
+  const targets = sinks.targets();
+  const posted = new Map<Target, number>();
+  const overflow = new Map<Target, number>();
+  let mark = start;
+  let count = 0;
+  for (const entry of fresh) {
+    // A repeated event inside one batch is already behind the advanced mark.
+    if (!isFresh(entry, mark)) continue;
+    // Advances before sending, so one broken channel never reposts the batch elsewhere.
+    mark = advance(mark, entry);
+    state.ledger = mark;
+    count++;
+    const live = await liveBet(entry.id);
+    dmAlert(entry, live);
+    const wanted = targets.filter((t) => wantsAlert(t.settings, entry));
+    const room = wanted.filter((t) => (posted.get(t) ?? 0) < MAX_PER_BATCH);
+    for (const t of wanted) {
+      if (!room.includes(t)) overflow.set(t, (overflow.get(t) ?? 0) + 1);
+    }
+    if (room.length === 0) continue;
+    const message = alertMessage(entry, live);
+    for (const t of room) {
+      await t.sendAlert(message);
+      posted.set(t, (posted.get(t) ?? 0) + 1);
+    }
+  }
+  for (const [t, skipped] of overflow) {
+    await t.sendText(
+      `${skipped} more alerts in this batch were not posted here. Every alert is on the proof page: ${PROOF_URL}`,
+    );
+  }
+  logger.info("Alerts posted", { fresh: count, targets: posted.size });
+}
+
+async function catchUp(sinks: FeedSinks): Promise<void> {
   const entries = await fetchLedger(LEDGER_PAGE);
-  if (!state.ledger) {
+  const mark = state.ledger;
+  if (!mark) {
     state.ledger = watermarkOf(entries) ?? {
       since: new Date().toISOString(),
       seen: [],
@@ -134,46 +206,26 @@ async function postAlerts(targets: Target[]): Promise<void> {
     });
     return;
   }
-
-  const fresh = freshEntries(entries, state.ledger);
-  if (fresh.length === 0) return;
-  if (fresh.length >= LEDGER_PAGE) {
-    logger.warn("More new alerts than one ledger page, older ones skipped", {
-      since: state.ledger.since,
+  const missed = entries.filter((e) => isFresh(e, mark)).length;
+  if (missed >= LEDGER_PAGE) {
+    logger.warn("More missed alerts than one ledger page, older ones skipped", {
+      since: mark.since,
     });
   }
-
-  const posted = new Map<Target, number>();
-  const overflow = new Map<Target, number>();
-  for (const entry of fresh) {
-    const wanted = targets.filter((t) => wantsAlert(t.settings, entry));
-    const room = wanted.filter((t) => (posted.get(t) ?? 0) < MAX_PER_TICK);
-    for (const t of wanted) {
-      if (!room.includes(t)) overflow.set(t, (overflow.get(t) ?? 0) + 1);
-    }
-    if (room.length === 0) continue;
-    const message = alertMessage(entry, await liveBet(entry.id));
-    for (const t of room) {
-      await t.sendAlert(message);
-      posted.set(t, (posted.get(t) ?? 0) + 1);
-    }
-  }
-  for (const [t, count] of overflow) {
-    await t.sendText(
-      `${count} more alerts in this batch were not posted here. Every alert is on the proof page: ${PROOF_URL}`,
-    );
-  }
-
-  // Advances past failed sends too, so one broken channel never reposts the batch elsewhere.
-  state.ledger = watermarkOf(entries) ?? state.ledger;
-  logger.info("Alerts posted", {
-    fresh: fresh.length,
-    targets: posted.size,
-  });
+  if (missed) logger.info("Catching up on missed alerts", { missed });
+  await deliverBatch(sinks, entries);
 }
 
-async function postArbs(targets: Target[]): Promise<void> {
-  const arbs = await fetchArbs(0);
+async function postArb(sinks: FeedSinks, arb: Arb): Promise<void> {
+  dmArb(arb);
+  const message = arbMessage(arb);
+  for (const t of sinks.targets()) {
+    if (t.sendArb && wantsArb(t.settings, arb)) await t.sendArb(message);
+  }
+}
+
+// Sent on every (re)connect: arbs not listed recently are new; the very first snapshot only seeds.
+async function arbsSnapshot(sinks: FeedSinks, arbs: Arb[]): Promise<void> {
   const now = Date.now();
   const known = state.arbs;
   const next: Record<string, string> = {};
@@ -182,36 +234,63 @@ async function postArbs(targets: Target[]): Promise<void> {
       if (now - Date.parse(at) < ARB_FORGET_MS) next[id] = at;
     }
   }
-  for (const arb of arbs) {
-    const isNew = known !== null && !(arb.id in next);
-    next[arb.id] = new Date(now).toISOString();
-    if (!isNew) continue;
-    const wanted = targets.filter(
-      (t) => t.sendArb && wantsArb(t.settings, arb),
-    );
-    if (wanted.length === 0) continue;
-    const message = arbMessage(arb);
-    for (const t of wanted) await t.sendArb?.(message);
-  }
+  const fresh = known ? arbs.filter((a) => !(a.id in next)) : [];
+  for (const arb of arbs) next[arb.id] = new Date(now).toISOString();
   state.arbs = next;
+  for (const arb of fresh) await postArb(sinks, arb);
 }
 
-async function tick(targets: Target[], persist: boolean): Promise<void> {
-  if (running) return;
-  running = true;
-  try {
-    await postAlerts(targets).catch((err) =>
-      logger.warn("Alerts poll failed", { error: String(err) }),
-    );
-    await postArbs(targets).catch((err) =>
-      logger.warn("Arbs poll failed", { error: String(err) }),
-    );
-    if (persist) await writeJson(FILE, state);
-  } catch (err) {
-    logger.error("Alerts feed tick failed", { error: String(err) });
-  } finally {
-    running = false;
+async function arbSeen(
+  sinks: FeedSinks,
+  arb: Arb,
+  added: boolean,
+): Promise<void> {
+  const known = state.arbs;
+  if (!known) return;
+  const at = known[arb.id];
+  const isNew = added && (!at || Date.now() - Date.parse(at) >= ARB_FORGET_MS);
+  known[arb.id] = new Date().toISOString();
+  if (isNew) await postArb(sinks, arb);
+}
+
+function onEvent(sinks: FeedSinks, event: FeedEvent): void {
+  switch (event.type) {
+    case "ledger_added":
+      pending.push(event.entry);
+      pendingTimer ??= setTimeout(() => {
+        const batch = pending;
+        pending = [];
+        pendingTimer = null;
+        run(sinks, () => deliverBatch(sinks, batch));
+      }, BATCH_WAIT_MS);
+      return;
+    case "arbs_snapshot":
+      run(sinks, () => arbsSnapshot(sinks, event.arbs));
+      return;
+    case "arb_added":
+    case "arb_updated":
+      run(sinks, () => arbSeen(sinks, event.arb, event.type === "arb_added"));
+      return;
+    case "arb_removed":
+      run(sinks, async () => {
+        if (state.arbs) state.arbs[event.id] = new Date().toISOString();
+      });
+      return;
   }
+}
+
+// Live from /v1/ws; every (re)connect first replays what GET /v1/ledger has past the watermark.
+export async function runAlertsFeed(sinks: FeedSinks): Promise<void> {
+  if (sinks.persist) state = parseState(await readJson(FILE));
+  connectLive({
+    onReady: () =>
+      run(sinks, () =>
+        catchUp(sinks).catch((err) =>
+          logger.warn("Ledger catch up failed", { error: String(err) }),
+        ),
+      ),
+    onEvent: (event) => onEvent(sinks, event),
+  });
 }
 
 function channelSender(
@@ -236,7 +315,7 @@ function channelSender(
   };
 }
 
-function guildTargets(client: Client): Target[] {
+export function guildTargets(client: Client): Target[] {
   const targets: Target[] = [];
   for (const [guildId, settings] of allGuildSettings()) {
     const guild = client.guilds.cache.get(guildId);
@@ -258,13 +337,6 @@ function guildTargets(client: Client): Target[] {
   return targets;
 }
 
-export async function startAlertsFeed(client: Client): Promise<void> {
-  await loadGuildSettings();
-  state = parseState(await readJson(FILE));
-  void tick(guildTargets(client), true);
-  setInterval(() => void tick(guildTargets(client), true), INTERVAL_MS);
-}
-
 // The newest alert these settings would get, else the newest alert at all.
 export async function previewAlert(
   settings: GuildAlertSettings,
@@ -277,37 +349,4 @@ export async function previewAlert(
     message: alertMessage(entry, await liveBet(entry.id)),
     matched: match !== undefined,
   };
-}
-
-function printMessage(kind: string, message: AlertMessage | string): void {
-  const body =
-    typeof message === "string"
-      ? { content: message }
-      : {
-          embeds: message.embeds.map((e) => e.toJSON()),
-          components: message.components.map((c) => c.toJSON()),
-        };
-  console.log(JSON.stringify({ dryRun: kind, ...body }, null, 2));
-}
-
-// DRY_RUN: no Discord login and no state written; renders to stdout what one guild with default settings and arbs on would get.
-export async function runAlertsDryRun(samples: number): Promise<void> {
-  const settings: GuildAlertSettings = { ...DEFAULT_SETTINGS, arbs: true };
-  for (const entry of (await fetchLedger(samples)).slice(0, samples)) {
-    printMessage("sample alert", alertMessage(entry, await liveBet(entry.id)));
-  }
-  const arb = (await fetchArbs(settings.minArbProfit)).find((a) =>
-    wantsArb(settings, a),
-  );
-  if (arb) printMessage("sample arb", arbMessage(arb));
-
-  const target: Target = {
-    name: "dry run",
-    settings,
-    sendAlert: async (m) => printMessage("alert", m),
-    sendArb: async (m) => printMessage("arb", m),
-    sendText: async (m) => printMessage("text", m),
-  };
-  await tick([target], false);
-  setInterval(() => void tick([target], false), INTERVAL_MS);
 }

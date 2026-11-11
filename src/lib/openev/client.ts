@@ -7,12 +7,18 @@ export type ValueBet = Schemas["ValueBet"];
 export type Arb = Schemas["Arb"];
 export type ArbLeg = Schemas["ArbLeg"];
 export type Confidence = Schemas["Confidence"];
+export type LiveEvent = Schemas["Event"];
 
 const TIMEOUT_MS = 10_000;
 
 export const OPENEV_API_URL = (
   process.env.OPENEV_API_URL?.trim() || "http://127.0.0.1:8085"
 ).replace(/\/+$/, "");
+
+// The API serves the live feed on the same port; containers skip Traefik and its per IP limits.
+export const OPENEV_WS_URL =
+  process.env.OPENEV_WS_URL?.trim() ||
+  `${OPENEV_API_URL.replace(/^http/, "ws")}/v1/ws`;
 
 const openev = createClient<paths>({ baseUrl: OPENEV_API_URL });
 
