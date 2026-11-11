@@ -9,6 +9,10 @@ interface BotEnvironment {
   LOG_LEVEL?: string;
   RESULTS_CHANNEL?: string;
   DATA_DIR?: string;
+  OPENEV_API_URL?: string;
+  OPENEV_WEBSITE_URL?: string;
+  DRY_RUN?: string;
+  DRY_RUN_SAMPLES?: string;
 }
 
 declare namespace NodeJS {

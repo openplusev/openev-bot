@@ -1,6 +1,7 @@
 import { resultEmbed } from "@/core/embeds/result.embed";
 import { ApiError, api, type ApiSettledPick } from "@/lib/api";
 import { logger } from "@/lib/logger";
+import { dataFile, isRecord, readJson, writeJson } from "@/lib/state";
 import {
   ChannelType,
   type Client,
@@ -8,8 +9,6 @@ import {
   PermissionFlagsBits,
   type TextChannel,
 } from "discord.js";
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 
 const INTERVAL_MS = 5 * 60 * 1000;
 const MAX_PER_TICK = 50;
@@ -18,8 +17,7 @@ const API_PAGE = 100;
 const CHANNEL_NAME = (
   process.env.RESULTS_CHANNEL?.trim() || "results"
 ).toLowerCase();
-const DATA_DIR = process.env.DATA_DIR?.trim() || "/app/data";
-const STATE_FILE = join(DATA_DIR, "results-watermarks.json");
+const STATE_FILE = dataFile("results-watermarks.json");
 
 // Grading stamps a whole batch with one time, so the watermark keeps the ids already posted at `since`.
 interface Watermark {
@@ -32,17 +30,13 @@ let running = false;
 let missingEndpointLogged = false;
 
 async function loadWatermarks(): Promise<void> {
-  try {
-    const parsed: unknown = JSON.parse(await readFile(STATE_FILE, "utf-8"));
-    if (typeof parsed !== "object" || parsed === null) return;
-    for (const [guildId, value] of Object.entries(parsed)) {
-      const mark = parseWatermark(value);
-      if (mark) watermarks.set(guildId, mark);
-    }
-    logger.info("Results watermarks loaded", { guilds: watermarks.size });
-  } catch (err) {
-    logger.info("No results watermarks on disk", { error: String(err) });
+  const parsed = await readJson(STATE_FILE);
+  if (!isRecord(parsed)) return;
+  for (const [guildId, value] of Object.entries(parsed)) {
+    const mark = parseWatermark(value);
+    if (mark) watermarks.set(guildId, mark);
   }
+  logger.info("Results watermarks loaded", { guilds: watermarks.size });
 }
 
 // Older files hold a bare ISO string per guild.
@@ -73,16 +67,8 @@ function byIdNumber(a: ApiSettledPick, b: ApiSettledPick): number {
   return Number(a.id) - Number(b.id);
 }
 
-// Write then rename so a crash mid write never leaves a truncated file.
-async function saveWatermarks(): Promise<void> {
-  try {
-    await mkdir(DATA_DIR, { recursive: true });
-    const tmp = `${STATE_FILE}.tmp`;
-    await writeFile(tmp, JSON.stringify(Object.fromEntries(watermarks)));
-    await rename(tmp, STATE_FILE);
-  } catch (err) {
-    logger.warn("Saving results watermarks failed", { error: String(err) });
-  }
+function saveWatermarks(): Promise<void> {
+  return writeJson(STATE_FILE, Object.fromEntries(watermarks));
 }
 
 function resultsChannel(guild: Guild): TextChannel | null {

@@ -41,6 +41,48 @@ volume), so restarts do not repost. A server is first polled from
 the moment the bot sees its results channel, never backfilled. A 404 from the endpoint is
 treated as not deployed yet and skipped quietly.
 
+## OpenEV alerts
+
+The bot also posts OpenEV value bet alerts. The source of truth is the OpenEV ledger
+(`GET /v1/ledger`, every value bet from +2% EV that is not a confidence check), so the Discord
+feed always matches the public proof page. Every 15 seconds the bot reads the newest 500 ledger
+rows and posts each new one once to every server whose filters it passes, at most 20 per server
+per tick (a larger burst ends with one line pointing at the proof page). Arbs (`GET /v1/arbs`,
+stale `check` arbs left out) are posted once per appearance; an arb gone for 6 hours counts as
+new again. The first poll after a fresh start marks the current ledger and arbs as seen instead
+of posting them.
+
+Types come from the API's OpenAPI spec: `bun run api:types` (reads
+`OPENEV_API_URL/v1/openapi.json`, writes `src/lib/openev/schema.d.ts`); calls go through
+`openapi-fetch` in `src/lib/openev/client.ts`, like the web app.
+
+| Command                                       | What it does                                                         |
+| --------------------------------------------- | -------------------------------------------------------------------- |
+| `/alerts channel channel`                     | Post alerts in this channel. Checks the bot can post embeds there.   |
+| `/alerts stop`                                | Stop posting alerts and arbs; filters are kept.                      |
+| `/alerts min_ev percent`                      | Minimum EV in percent (2 to 50, default 2, the ledger floor).        |
+| `/alerts books books`                         | Comma list of book codes (autocompleted from `/v1/books`), or `all`. |
+| `/alerts confidence level`                    | Minimum confidence: low (all), medium or high.                       |
+| `/alerts arbs enabled [channel] [min_profit]` | Arbs on or off, own channel (default the alert channel), default 1%. |
+| `/alerts status`                              | This server's settings, only to you.                                 |
+| `/alerts test`                                | The newest alert your filters let through, only to you, not posted.  |
+
+All `/alerts` commands need Manage Server by default (server owners can change that under
+Integrations). An arb passes the books filter only if every leg is at one of the chosen books.
+
+The alert embed shows selection and book, alert odds against the fair odds, EV and safe EV (the
+least favourable devig, read from `GET /v1/value-bets/{id}` when the price is still the alert
+price), confidence, a quarter Kelly stake per 1000 bankroll, kickoff in the reader's time zone,
+and link buttons to `/value-bets/{id}` and `/games/{id}` on `OPENEV_WEBSITE_URL`. When the bet
+is gone by the time it posts, the odds field says so.
+
+Settings live in `DATA_DIR/openev-guilds.json`, the ledger watermark and seen arbs in
+`DATA_DIR/openev-alerts.json`.
+
+Dry run without Discord: `DRY_RUN=1 OPENEV_API_URL=http://127.0.0.1:8085 bun start` prints
+`DRY_RUN_SAMPLES` (default 3) recent alerts and one arb as embed JSON, then every new alert as
+it lands, for one server with default filters and arbs on. It writes no state.
+
 ## Run
 
 ```bash

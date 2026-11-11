@@ -8,11 +8,13 @@
     "start": "bun src/main.ts",
     "build": "tsup",
     "typecheck": "tsc --noEmit",
+    "api:types": "bunx openapi-typescript@7.13.0 ${OPENEV_API_URL:-http://127.0.0.1:8085}/v1/openapi.json -o src/lib/openev/schema.d.ts",
     "prettier": "prettier -w ."
   },
   "dependencies": {
     "discord.js": "14.27.0",
     "discordx": "11.13.3",
+    "openapi-fetch": "0.17.0",
     "pino": "10.4.0"
   },
   "devDependencies": {

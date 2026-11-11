@@ -1,4 +1,5 @@
 import { ErrorBoundary } from "@/bot/guards/error-boundary.guard";
+import { runAlertsDryRun, startAlertsFeed } from "@/core/services/alerts.feed";
 import { startResultsFeed } from "@/core/services/results.feed";
 import { logger } from "@/lib/logger";
 import { WEBSITE_URL } from "@/shared/config/branding";
@@ -8,8 +9,9 @@ import "./bot";
 
 const token = process.env.DISCORD_BOT_TOKEN?.trim();
 const devGuildId = process.env.DEV_GUILD_ID?.trim();
+const dryRun = process.env.DRY_RUN?.trim() === "1";
 
-if (!process.env.BOT_API_TOKEN?.trim()) {
+if (!dryRun && !process.env.BOT_API_TOKEN?.trim()) {
   logger.warn("BOT_API_TOKEN is not set, API calls will be rejected");
 }
 
@@ -28,6 +30,7 @@ bot.once("clientReady", async () => {
     commandScope: devGuildId ? `guild ${devGuildId}` : "global",
   });
   await startResultsFeed(bot);
+  await startAlertsFeed(bot);
 });
 
 bot.on("interactionCreate", (interaction) => {
@@ -47,6 +50,10 @@ bot.on("shardError", (err) =>
 );
 
 async function main() {
+  if (dryRun) {
+    await runAlertsDryRun(Number(process.env.DRY_RUN_SAMPLES) || 3);
+    return;
+  }
   if (!token) {
     logger.error("DISCORD_BOT_TOKEN is not set");
     process.exit(1);
@@ -63,6 +70,8 @@ async function main() {
 }
 
 main().catch((err) => {
-  logger.error("Login failed", { error: String(err) });
+  logger.error(dryRun ? "Dry run failed" : "Login failed", {
+    error: String(err),
+  });
   process.exit(1);
 });
